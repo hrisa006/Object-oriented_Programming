@@ -137,7 +137,7 @@ int main() {
 	std::cin >> date.year;
 
 	if (!checkDate(date)) {
-		std::cout << "You have entered empty values for the date! Please try again!\n";
+		std::cout << "You have entered empty or wrong values for the date! Please try again!\n";
 
 		std::cout << "day: ";
 		std::cin >> date.day;
@@ -160,7 +160,7 @@ int main() {
 	std::cin >> date2.year;
 
 	if (!checkDate(date2)) {
-		std::cout << "You have entered empty values for the date! Please try again!\n";
+		std::cout << "You have entered empty or wrong values for the date! Please try again!\n";
 
 		std::cout << "day: ";
 		std::cin >> date2.day;
