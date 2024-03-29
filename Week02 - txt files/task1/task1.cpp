@@ -4,8 +4,7 @@
 const int BUFF_SIZE = 1024;
 //const char FILE_NAME[] = "file.txt";
 
-int main()
-{
+int main() {
 	//std::ofstream file(FILE_NAME); - create a file /in the "task1" folder/
 
 	std::ifstream file("file.txt"); //(FILE_NAME);
@@ -30,9 +29,6 @@ int main()
 	if (!file1.eof()) {
 		std::cout << "File data has been copied to a new file!\n";
 	}
-
-	file.close();
-	file1.close();
 
     return 0;
 }
