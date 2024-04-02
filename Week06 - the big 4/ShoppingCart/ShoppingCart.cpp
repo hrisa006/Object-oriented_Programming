@@ -200,14 +200,15 @@ int ShoppingCart::getMaxQuantity() const {
 }
 
 void ShoppingCart::setProduct(const Product* product) {
-    /*if (!product || product == this->product) {
-        return;
-    }
-    delete[] this->product;*/
-    this->product = new Product[this->maxQuantity];
+    if (!product || this->product == product) {
+		return;
+	}
+
+	delete[] this->product;
+	this->product = new Product[this->maxQuantity];
     for (int i = 0; i < this->maxQuantity; ++i) {
-        this->product[i] = product[i];
-    }
+		this->product[i] = product[i];
+	}
 }
 
 void ShoppingCart::setMaxQuantity(int maxQuantity) {
@@ -311,7 +312,7 @@ void ShoppingCart::saveToFile(const ShoppingCart& cart, std::ofstream& file) {
 
     while (!file.eof()) {
         char buff[BUFF_SIZE];
-        for (int i = 0; i < maxQuantity; i++) {
+        for (int i = 0; i < maxQuantity; ++i) {
             file << "name: " << product[i].getName() << ", price: " << product[i].getPrice() << ", quantity: " << product[i].getQuantity() << std::endl;
         }
     }
