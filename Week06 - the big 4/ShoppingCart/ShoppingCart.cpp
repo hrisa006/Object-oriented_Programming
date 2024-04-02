@@ -18,7 +18,7 @@ private:
 public:
     Product(const char* name, double price, int quantity);
 
-    Product() : name(nullptr), price(0.0), quantity(NULL) {}
+    Product() : name(nullptr), price(0.00), quantity(0) {}
 
     Product(const Product& other);
 
@@ -49,10 +49,10 @@ void Product::copyFrom(const Product& other) {
 
 void Product::free() {
     delete[] name;
-
     name = nullptr;
-    price = NULL;
-    quantity = NULL;
+
+    price = 0.00;
+    quantity = 0;
 }
 
 Product::Product(const char* name, double price, int quantity) {
@@ -78,19 +78,19 @@ Product::~Product() {
 }
 
 char* Product::getName() const {
-    return name;
+    return this->name;
 }
 
 double Product::getPrice() const {
-    return price;
+    return this->price;
 }
 
 int Product::getQuantity() const {
-    return quantity;
+    return this->quantity;
 }
 
 void Product::setName(const char* name) {
-    if (!name || name == this->name) {
+    if (!name || this->name == name) {
         return;
     }
     delete[] this->name;
@@ -113,7 +113,7 @@ void Product::setQuantity(int quantity) {
 
 class ShoppingCart {
 private:
-    Product* product = new Product[MAX_QUANTITY];
+    Product* product;
     int maxQuantity;
 
     void copyFrom(const ShoppingCart& other);
@@ -122,7 +122,7 @@ private:
 public:
     ShoppingCart(const Product* product, int max_quantity);
 
-    ShoppingCart() : product(nullptr), maxQuantity(NULL) {}
+    ShoppingCart() : product(nullptr), maxQuantity(MAX_QUANTITY) {}
 
     ShoppingCart(const ShoppingCart& other);
 
@@ -138,7 +138,7 @@ public:
 
     void setMaxQuantity(int maxQuantity);
 
-    void addProductToTheCart(const Product& product);
+    void addProductToTheCart(const Product& product, int quantity);
 
     void removeProduct(const char* productName);
 
@@ -156,10 +156,10 @@ public:
 };
 
 void ShoppingCart::copyFrom(const ShoppingCart& other) {
-    maxQuantity = other.maxQuantity;
-    product = new Product[maxQuantity];
-    for (int i = 0; i < maxQuantity; i++) {
-        product[i] = other.product[i];
+    this->maxQuantity = other.maxQuantity;
+    this->product = new Product[this->maxQuantity];
+    for (int i = 0; i < this->maxQuantity; ++i) {
+        this->product[i] = other.product[i];
     }
 }
 
@@ -167,7 +167,7 @@ void ShoppingCart::free() {
     delete[] product;
 
     product = nullptr;
-    maxQuantity = NULL;
+    maxQuantity = 0;
 }
 
 ShoppingCart::ShoppingCart(const Product* product, int max_quantity) {
@@ -192,19 +192,22 @@ ShoppingCart::~ShoppingCart() {
 }
 
 Product* ShoppingCart::getProduct() const {
-    return product;
+    return this->product;
 }
 
 int ShoppingCart::getMaxQuantity() const {
-    return maxQuantity;;
+    return this->maxQuantity;;
 }
 
 void ShoppingCart::setProduct(const Product* product) {
-    if (!product || product == this->product) {
+    /*if (!product || product == this->product) {
         return;
     }
-    delete this->product;
-    this->product = new Product(*product);
+    delete[] this->product;*/
+    this->product = new Product[this->maxQuantity];
+    for (int i = 0; i < this->maxQuantity; ++i) {
+        this->product[i] = product[i];
+    }
 }
 
 void ShoppingCart::setMaxQuantity(int maxQuantity) {
@@ -213,67 +216,84 @@ void ShoppingCart::setMaxQuantity(int maxQuantity) {
     }
 }
 
-void ShoppingCart::addProductToTheCart(const Product& product) {
-    for (int i = 0; i < maxQuantity; i++) {
-        if (maxQuantity < MAX_QUANTITY || this->product[i].getName() != product.getName()) {
-            this->product[maxQuantity++] = product;
+void ShoppingCart::addProductToTheCart(const Product& product, int quantity) {
+    if (quantity >= this->maxQuantity) {
+        return;
+    }
+
+    for (int i = 0; i < this->maxQuantity; i++) {
+        if (strcmp(product.getName(), this->product[i].getName()) == 0) {
+            return;
         }
-    }  
+    }
+
+    this->product[this->maxQuantity] = product;
+    this->maxQuantity++;
 }
 
 void ShoppingCart::removeProduct(const char* productName) {
-    for (int i = 0; i < maxQuantity; i++) {
-        if (product[i].getName() == productName) {
-            product[i] = product[i + 1];
-            maxQuantity--;
+    for (int i = 0; i < this->maxQuantity; ++i) {
+        if (strcmp(this->product[i].getName(), productName) == 0) {
+            Product temp{};
+            temp = this->product[i];
+            this->product[i] = this->product[i + 1];
+            this->product[i + 1] = temp;
+            this->maxQuantity--;
+            break;
         }
     }
 }
 
 bool ShoppingCart::isEmpty() const{
-    if (maxQuantity == NULL) {
+    if (maxQuantity == 0) {
         return true;
     }
     else return false;
 }
 
 double ShoppingCart::totalPrice() {
-    double total = 0.0;
-    for (int i = 0; i < maxQuantity; i++) {
+    double total = 0.00;
+    for (int i = 0; i < this->maxQuantity; ++i) {
         total += product[i].getPrice();
     }
     return total;
 }
 
 void ShoppingCart::sortByName() {
-    for (int i = 0; i < maxQuantity; i++) {
-        if (product[i].getName() > product[i + 1].getName()) {
-            Product p;
-            p.operator=(product[i + 1]);
-            product[i + 1] = product[i];
-            product[i] = p;
+    for (int i = 0; i < this->maxQuantity - 1; ++i) {
+        for (int j = i; j < this->maxQuantity - i - 1; ++j) {
+            if (strcmp(this->product[j].getName(), this->product[j + 1].getName()) > 0) {
+                Product temp{};
+                temp = this->product[j + 1];
+                this->product[j + 1] = this->product[j];
+                product[j] = temp;
+            }
         }
     }
 }
 
 void ShoppingCart::sortByPrices() {
-    for (int i = 0; i < maxQuantity; i++) {
-        if (product[i].getPrice() > product[i + 1].getPrice()) {
-            Product p;
-            p.operator=(product[i + 1]);
-            product[i + 1] = product[i];
-            product[i] = p;
+    for (int i = 0; i < maxQuantity - 1; ++i) {
+        for (int j = i; j < this->maxQuantity - i - 1; ++j) {
+            if (strcmp(this->product[j].getName(), this->product[j + 1].getName()) > 0) {
+                Product temp{};
+                temp = this->product[j + 1];
+                this->product[j + 1] = this->product[j];
+                product[j] = temp;
+            }
         }
     }
 }
 
 void ShoppingCart::sortByQuantity() {
-    for (int i = 0; i < maxQuantity; i++) {
-        if (product[i].getQuantity() > product[i + 1].getQuantity()) {
-            Product p;
-            p.operator=(product[i + 1]);
-            product[i + 1] = product[i];
-            product[i] = p;
+    for (int i = 0; i < maxQuantity - 1; ++i) {
+        for (int j = i; j < this->maxQuantity - i - 1; ++j) {
+            if (strcmp(this->product[j].getName(), this->product[j + 1].getName()) > 0) {
+                Product temp{};
+                temp = this->product[j + 1];
+                this->product[j + 1] = this->product[j];
+                product[j] = temp;
+            }
         }
     }
 }
@@ -308,8 +328,8 @@ int main() {
     Product p1("Yogurt", 1.60, 3);
     Product p2("Eggs", 0.50, 6);
 
-    cart.addProductToTheCart(p1);
-    cart.addProductToTheCart(p2);
+    cart.addProductToTheCart(p1, 1);
+    cart.addProductToTheCart(p2, 1);
 
     std::cout << "Total price of cart: " << cart.totalPrice() << std::endl;
 

@@ -1,3 +1,3 @@
 ﻿  ShoppingCart.cpp
-C:\Users\hrist\OneDrive - MG Geo Milev - Pleven\Документи\Uni Thingies\Курс 1\Обектно-ориент. програмиране - S2\Практикум 2\Week06 - the big 4\ShoppingCart\ShoppingCart.cpp(293,14): warning C4101: 'buff': unreferenced local variable
+C:\Users\hrist\OneDrive - MG Geo Milev - Pleven\Документи\Uni Thingies\Курс 1\Обектно-ориент. програмиране - S2\Практикум 2\Week06 - the big 4\ShoppingCart\ShoppingCart.cpp(313,14): warning C4101: 'buff': unreferenced local variable
   ShoppingCart.vcxproj -> C:\Users\hrist\OneDrive - MG Geo Milev - Pleven\Документи\Uni Thingies\Курс 1\Обектно-ориент. програмиране - S2\Практикум 2\Week06 - the big 4\x64\Debug\ShoppingCart.exe
